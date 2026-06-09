@@ -1,7 +1,10 @@
 package com.example.spring_cliff.core;
 
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import org.springframework.stereotype.Component;
 
 @Component
@@ -12,7 +15,7 @@ public class FileSystem {
         if (!Files.exists(root)) {
             try {
                 Files.createDirectories(root);
-            } catch (Exception e) {
+            } catch (IOException e) {
                 throw new RuntimeException("Failed to create file system root directory", e);
             }
         }
