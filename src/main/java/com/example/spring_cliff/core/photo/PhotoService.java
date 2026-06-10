@@ -16,7 +16,7 @@ public class PhotoService {
 
     public Optional<byte[]> download(String name) {
         try {
-            byte[] data = fs.load(name + ".jpg");
+            byte[] data = fs.load("unicorns/" + name + ".jpg");
             return Optional.of(data);
         } catch (IOException e) {
             return Optional.empty();

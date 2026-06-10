@@ -1,35 +1,36 @@
 package com.example.spring_cliff.core;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.InputStream;
 
 import org.springframework.stereotype.Component;
 
 @Component
 public class FileSystem {
-    private final Path root = Paths.get(System.getProperty("user.home")).resolve("fs");
-
-    public FileSystem() {
-        if (!Files.exists(root)) {
-            try {
-                Files.createDirectories(root);
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to create file system root directory", e);
-            }
-        }
-    }
+    private static final String IMAGES_PATH = "images/";
 
     public long getFreeSpace() {
-        return root.toFile().getFreeSpace();
+        return 0;
     }
 
     public byte[] load(String filename) throws IOException {
-        return Files.readAllBytes(root.resolve(filename));
+        String resourcePath = IMAGES_PATH + filename;
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream(resourcePath)) {
+            if (is == null) {
+                throw new IOException("Resource not found: " + resourcePath);
+            }
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            byte[] buffer = new byte[8192];
+            int bytesRead;
+            while ((bytesRead = is.read(buffer)) != -1) {
+                baos.write(buffer, 0, bytesRead);
+            }
+            return baos.toByteArray();
+        }
     }
 
     public void store(String filename, byte[] data) throws IOException {
-        Files.write(root.resolve(filename), data);
+        throw new UnsupportedOperationException("Storing files is not supported for classpath resources");
     }
 }
